@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+        Vasco build file for Phing
+        written by Daniel Dimitrov - https://compojoom.com
+        
+        Run "phing"
+        from the build directory to build the component, modules and plugins
+-->
+
+<project name="com_hotspots" default="buildZip">
+	<property file="./build.properties"/>
+
+	<taskdef name="extfile" classname="phingext.listJPackageFilesTask" classpath="../../buildtools"/>
+	<taskdef name="gitversion" classname="phingext.GitVersionTask" classpath="../../buildtools"/>
+	<taskdef name="explode" classname="phingext.explodeTask" classpath="../../buildtools"/>
+
+	<import file="../../buildtools/helper.xml" optional="true"/>
+	<import file="../../buildtools/plugin.xml" optional="true"/>
+	<import file="../../buildtools/plugincb.xml" optional="true"/>
+	<import file="../../buildtools/module.xml" optional="true"/>
+	<import file="../../buildtools/library.xml" optional="true"/>
+
+	<property name="dirs.root" value="${project.basedir}/../"/>
+	<property name="dirs.source" value="${dirs.root}source"/>
+
+	<tstamp>
+		<format property="build.date" pattern="%Y-%m-%d"/>
+	</tstamp>
+
+	<if>
+		<equals arg1="${build.version}" arg2="dev"/>
+		<then>
+			<gitversion workingCopy="${dirs.root}" propertyName="git.lastrevision"/>
+			<property name="build.version" value="git_${git.lastrevision}" override="true"/>
+		</then>
+	</if>
+
+	<target name="setup-properties">
+		<!-- Initialize the version if it's not set -->
+
+
+		<property name="destination.dir"
+		          value="${dirs.root}packages/components/com_${component.name}/com_${component.name}-${build.version}"/>
+		<property name="destination.base.dir" value="${destination.dir}"/>
+
+		<mkdir dir="${destination.dir}"/>
+
+		<available file="${dirs.source}\administrator\components\com_${component.name}"
+		           type="dir" property="admin.exist" value="yes"/>
+		<available file="${dirs.source}\administrator\language"
+		           type="dir" property="adminLang.exist" value="yes"/>
+		<available file="${dirs.source}\components\com_${component.name}"
+		           type="dir" property="frontend.exist" value="yes"/>
+		<available file="${dirs.source}\language"
+		           type="dir" property="frontendLang.exist" value="yes"/>
+		<available file="${dirs.source}\media\com_${component.name}"
+		           type="dir" property="media.exist" value="yes"/>
+
+	</target>
+
+	<fileset dir="${dirs.source}" id="component-core" expandsymboliclinks="true">
+		<exclude name="administrator/components/com_hotspots/views/kml/**"/>
+		<exclude name="administrator/components/com_hotspots/views/kmls/**"/>
+		<exclude name="administrator/components/com_hotspots/views/customfield/**"/>
+		<exclude name="administrator/components/com_hotspots/controllers/customfield.php"/>
+
+		<include name="administrator/components/com_hotspots/**"/>
+
+		<include name="administrator/language/en-GB/en-GB.com_hotspots.ini"/>
+		<include name="administrator/language/en-GB/en-GB.com_hotspots.sys.ini"/>
+
+		<exclude name="components/com_hotspots/assets/aup/**"/>
+
+		<exclude name="components/com_hotspots/controllers/form.php"/>
+		<exclude name="components/com_hotspots/controllers/kmls.php"/>
+		<exclude name="components/com_hotspots/controllers/tiles.png.php"/>
+
+		<exclude name="components/com_hotspots/models/form.php"/>
+		<exclude name="components/com_hotspots/models/kml.php"/>
+		<exclude name="components/com_hotspots/models/tile.php"/>
+
+		<exclude name="components/com_hotspots/views/form/**"/>
+		<exclude name="components/com_hotspots/views/hotspots/tmpl/userhotspots.*"/>
+		<exclude name="components/com_hotspots/views/kmls/**"/>
+		<exclude name="components/com_hotspots/views/tile/**"/>
+
+		<include name="language/en-GB/en-GB.com_hotspots.ini"/>
+
+		<include name="components/com_hotspots/**"/>
+
+		<exclude name="media/com_hotspots/images/hotspots/*.*"/>
+		<exclude name="media/com_hotspots/images/categories/*.*"/>
+		<exclude name="media/com_hotspots/images/thumbs/*.*"/>
+
+		<exclude name="media/com_hotspots/js/modules/kml.js" />
+		<exclude name="media/com_hotspots/js/modules/tiles.js" />
+		<exclude name="media/com_hotspots/kmls/**" />
+		<exclude name="media/com_hotspots/tiles/**" />
+
+		<include name="media/com_hotspots/images/categories/sample/**" />
+		<include name="media/com_hotspots/**" />
+
+	</fileset>
+
+	<fileset dir="${dirs.source}/administrator/components/com_${component.name}"
+	         id="component-install">
+		<include name="${component.name}.xml"/>
+		<include name="script.php"/>
+	</fileset>
+
+	<fileset dir="${dirs.source}" id="component-core-only">
+
+	</fileset>
+
+	<fileset dir="${dirs.source}" id="component-pro"  expandsymboliclinks="true">
+		<include name="administrator/components/com_hotspots/**"/>
+		<include name="administrator/language/en-GB/en-GB.com_hotspots.ini"/>
+
+		<include name="administrator/language/en-GB/en-GB.com_hotspots.ini"/>
+		<include name="administrator/language/en-GB/en-GB.com_hotspots.sys.ini"/>
+
+		<include name="components/com_hotspots/**"/>
+		<include name="components/com_comprofiler/**"/>
+
+		<include name="language/en-GB/en-GB.com_hotspots.ini"/>
+
+		<exclude name="media/com_hotspots/images/hotspots/*.*"/>
+		<exclude name="media/com_hotspots/images/categories/*.*"/>
+		<exclude name="media/com_hotspots/images/thumbs/*.*"/>
+
+		<exclude name="media/com_hotspots/kmls/**" />
+		<exclude name="media/com_hotspots/tiles/**" />
+
+		<include name="media/com_hotspots/images/categories/sample/**" />
+		<include name="media/com_hotspots/**" />
+	</fileset>
+
+	<filterchain id="standard-tokens-core">
+		<replacetokens begintoken="@@" endtoken="@@">
+			<token key="DATE" value="${build.date}"/>
+			<token key="VERSION" value="${build.version}"/>
+		</replacetokens>
+	</filterchain>
+
+	<filterchain id="standard-config-core">
+		<replacetokens begintoken="@@" endtoken="@@">
+			<token key="PRO" value="true"/>
+			<token key="PRO_DISABLED_CLASS" value="disabled"/>
+			<token key="PRO_LABEL" value="_PRO"/>
+		</replacetokens>
+	</filterchain>
+
+	<filterchain id="standard-config-pro">
+		<replacetokens begintoken="@@" endtoken="@@">
+			<token key="PRO" value="false"/>
+			<token key="PRO_DISABLED_CLASS" value=""/>
+			<token key="PRO_LABEL" value=""/>
+		</replacetokens>
+	</filterchain>
+
+	<target name="buildZip" depends="setup-properties, buildComponent">
+		<echo msg="buildZip"/>
+
+		<zip destfile="${destination.dir}/../com_${component.name}-${build.version}/com_${component.name}-${build.version}-core.zip"
+		     basedir="${destination.dir}/../com_${component.name}-${build.version}/core"/>
+
+		<zip destfile="${destination.dir}/../com_${component.name}-${build.version}/com_${component.name}-${build.version}-pro.zip"
+		     basedir="${destination.dir}/../com_${component.name}-${build.version}/pro"/>
+	</target>
+
+	<target name="build-component-core">
+		<!-- Core version -->
+		<copy todir="${destination.dir}/core">
+			<fileset refid="component-core"/>
+			<!--<fileset refid="component-core-only"/>-->
+			<fileset refid="component-install"/>
+		</copy>
+
+		<mkdir dir="${destination.dir}/core/components/com_hotspots/assets"/>
+		<touch file="${destination.dir}/core/components/com_hotspots/assets/index.html"/>
+		<mkdir dir="${destination.dir}/core/media/com_hotspots/rss"/>
+		<touch file="${destination.dir}/core/media/com_hotspots/rss/index.html" />
+		<mkdir dir="${destination.dir}/core/media/com_hotspots/tiles"/>
+		<touch file="${destination.dir}/core/media/com_hotspots/tiles/index.html" />
+
+		<!-- Copy the CHANGELOG -->
+		<copy file="${dirs.root}/CHANGELOG" tofile="${destination.dir}/core/administrator/components/com_hotspots/CHANGELOG.php" overwrite="true">
+		</copy>
+
+		<copy file="./templates/version.php"
+		      tofile="${destination.dir}/core/administrator/components/com_hotspots/version.php" overwrite="true">
+			<filterchain refid="standard-tokens-core"/>
+			<filterchain>
+				<replacetokens begintoken="@@" endtoken="@@">
+					<token key="PRO" value="0"/>
+				</replacetokens>
+			</filterchain>
+		</copy>
+
+
+		<copy file="${dirs.source}/administrator/components/com_${component.name}/config.xml"
+		      tofile="${destination.dir}/core/administrator/components/com_${component.name}/config.xml" overwrite="true">
+			<filterchain refid="standard-config-core"/>
+		</copy>
+
+		<copy file="${dirs.source}/components/com_${component.name}/views/hotspots/tmpl/default.xml"
+		      tofile="${destination.dir}/core/components/com_${component.name}/views/hotspots/tmpl/default.xml" overwrite="true">
+			<filterchain refid="standard-config-core"/>
+		</copy>
+
+		<copy file="${dirs.source}/administrator/components/com_${component.name}/${component.name}.xml"
+		      tofile="${destination.dir}/core/${component.name}.xml" overwrite="true">
+			<filterchain refid="standard-tokens-core"/>
+		</copy>
+		<!-- build the extension xml file -->
+		<extfile file="${destination.dir}/core/${component.name}.xml"
+		         sourceDir="${destination.dir}/core"
+		         component="com_${component.name}"
+				/>
+
+		<if>
+			<isset property="plugins_core"/>
+			<then>
+				<property name="destination.dir" value="${destination.base.dir}/core" override="true"/>
+				<foreach list="${plugins_core}" param="plugin" target="buildPlugin"/>
+				<property name="destination.dir" value="${destination.base.dir}" override="true"/>
+			</then>
+		</if>
+
+
+		<!-- Make the modules -->
+		<if>
+			<isset property="modules_admin"/>
+			<then>
+				<property name="destination.dir" value="${destination.base.dir}/core" override="true"/>
+				<foreach list="${modules_admin}" param="module_admin" target="buildModule"/>
+				<property name="destination.dir" value="${destination.base.dir}" override="true"/>
+			</then>
+		</if>
+
+		<if>
+			<isset property="modules_core"/>
+			<then>
+				<property name="destination.dir" value="${destination.base.dir}/core" override="true"/>
+				<foreach list="${modules_core}" param="module" target="buildModule"/>
+				<property name="destination.dir" value="${destination.base.dir}" override="true"/>
+
+			</then>
+		</if>
+
+		<if>
+			<isset property="libraries"/>
+			<then>
+				<foreach list="${libraries}" param="library" target="build-library-sources">
+					<property name="destination.dir" value="${destination.dir}/core/libraries/${library}" override="true"/>
+				</foreach>
+				<property name="destination.dir" value="${destination.dir}" override="true"/>
+			</then>
+		</if>
+
+	</target>
+
+	<target name="build-component-pro">
+		<copy todir="${destination.dir}/pro">
+			<fileset refid="component-pro"/>
+			<fileset refid="component-install"/>
+		</copy>
+
+		<!-- create the necessary dirs -->
+		<mkdir dir="${destination.dir}/pro/media/com_hotspots/kml"/>
+		<touch file="${destination.dir}/pro/media/com_hotspots/kml/index.html" />
+		<mkdir dir="${destination.dir}/pro/media/com_hotspots/tiles"/>
+		<touch file="${destination.dir}/pro/media/com_hotspots/tiles/index.html" />
+		<mkdir dir="${destination.dir}/pro/media/com_hotspots/rss"/>
+		<touch file="${destination.dir}/pro/media/com_hotspots/rss/index.html" />
+
+		<!-- Copy the CHANGELOG -->
+		<copy file="${dirs.root}/CHANGELOG" tofile="${destination.dir}/pro/administrator/components/com_hotspots/CHANGELOG.php" overwrite="true">
+		</copy>
+
+		<copy file="./templates/version.php"
+		      tofile="${destination.dir}/pro/administrator/components/com_hotspots/version.php" overwrite="true">
+			<filterchain refid="standard-tokens-core"/>
+			<filterchain>
+				<replacetokens begintoken="@@" endtoken="@@">
+					<token key="PRO" value="1"/>
+				</replacetokens>
+			</filterchain>
+		</copy>
+
+
+		<copy file="${dirs.source}/administrator/components/com_${component.name}/${component.name}.xml"
+		      tofile="${destination.dir}/pro/${component.name}.xml" overwrite="true">
+			<filterchain refid="standard-tokens-core"/>
+		</copy>
+
+		<copy file="${dirs.source}/administrator/components/com_${component.name}/config.xml"
+		      tofile="${destination.dir}/pro/administrator/components/com_${component.name}/config.xml" overwrite="true">
+			<filterchain refid="standard-config-pro"/>
+		</copy>
+
+		<copy file="${dirs.source}/components/com_${component.name}/views/hotspots/tmpl/default.xml"
+		      tofile="${destination.dir}/pro/components/com_${component.name}/views/hotspots/tmpl/default.xml" overwrite="true">
+			<filterchain refid="standard-config-pro"/>
+		</copy>
+
+		<!-- build the extension xml file -->
+		<extfile file="${destination.dir}/pro/${component.name}.xml"
+		         sourceDir="${destination.dir}/pro"
+		         component="com_${component.name}"
+				/>
+
+		<!-- Make the plugins -->
+		<if>
+			<isset property="plugins_pro"/>
+			<then>
+				<property name="destination.dir" value="${destination.base.dir}/pro" override="true"/>
+				<foreach list="${plugins_pro}" param="plugin" target="buildPlugin"/>
+				<property name="destination.dir" value="${destination.base.dir}" override="true"/>
+			</then>
+		</if>
+
+		<if>
+			<isset property="pluginscb"/>
+			<then>
+				<property name="destination.dir" value="${destination.base.dir}/pro" override="true"/>
+				<foreach list="${pluginscb}" param="plugin" target="buildPluginCB"/>
+				<property name="destination.dir" value="${destination.base.dir}" override="true"/>
+			</then>
+		</if>
+
+		<!-- Make the modules -->
+		<if>
+			<isset property="modules_admin"/>
+			<then>
+				<property name="destination.dir" value="${destination.base.dir}/pro" override="true"/>
+				<foreach list="${modules_admin}" param="module_admin" target="buildModule"/>
+				<property name="destination.dir" value="${destination.base.dir}" override="true"/>
+			</then>
+		</if>
+
+		<if>
+			<isset property="modules_pro"/>
+			<then>
+				<property name="destination.dir" value="${destination.base.dir}/pro" override="true"/>
+				<foreach list="${modules_pro}" param="module" target="buildModule"/>
+				<property name="destination.dir" value="${destination.base.dir}" override="true"/>
+			</then>
+		</if>
+
+		<if>
+			<isset property="libraries"/>
+			<then>
+				<foreach list="${libraries}" param="library" target="build-library-sources">
+					<property name="destination.dir" value="${destination.dir}/pro/libraries/${library}" override="true"/>
+				</foreach>
+				<property name="destination.dir" value="${destination.dir}" override="true"/>
+			</then>
+		</if>
+	</target>
+
+	<target name="buildComponent"
+	        depends="setup-properties, build-component-core, build-component-pro" />
+
+	<target name="dev-release" description="Makes everything except the documentation"
+	        depends="buildZip, ftpdeploy">
+	</target>
+
+	<target name="ftpdeploy" depends="setup-properties">
+		<gitversion workingCopy="${dirs.root}" propertyName="git.lastrevision"/>
+		<!-- Core release -->
+		<echo>Uploading Core release</echo>
+		<ftpdeploy
+				host="${ftp.host}"
+				port="${ftp.port}"
+				username="${ftp.username}"
+				password="${ftp.password}"
+				dir="${ftp.dir}/hotspots/core/git${git.lastrevision}"
+				mode="${ftp.mode}"
+				level="debug">
+			<fileset dir="${dirs.root}">
+				<include name="CHANGELOG"/>
+			</fileset>
+			<fileset dir="${destination.dir}/">
+				<include name="com_${component.name}-git_${git.lastrevision}-core.zip"/>
+			</fileset>
+		</ftpdeploy>
+		<!-- Professional release -->
+		<echo>Uploading Professional release</echo>
+		<ftpdeploy
+				host="${ftp.host}"
+				port="${ftp.port}"
+				username="${ftp.username}"
+				password="${ftp.password}"
+				dir="${ftp.dir}/hotspots/pro/git${git.lastrevision}"
+				mode="${ftp.mode}"
+				level="debug">
+			<fileset dir="${dirs.root}">
+				<include name="CHANGELOG"/>
+			</fileset>
+			<fileset dir="${destination.dir}/">
+				<include name="com_${component.name}-git_${git.lastrevision}-pro.zip"/>
+			</fileset>
+		</ftpdeploy>
+	</target>
+</project>

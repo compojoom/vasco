@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="3.3" type="plugin" group="twofactorauth" method="upgrade">
+	<name>@@PLUGINNAME@@</name>
+	<author>compojoom.com</author>
+	<creationDate>@@DATE@@</creationDate>
+	<copyright>Copyright (C) 2014 compojoom.com. All rights reserved.</copyright>
+	<license>GNU/GPL http://www.gnu.org/licenses/gpl-3.0.html</license>
+	<authorUrl>https://compojoom.com</authorUrl>
+	<version>@@VERSION@@</version>
+	<description>Vasco Security 2 factor authentication plugin</description>
+	<files>
+		##PACKAGEFILESPLUGIN##
+	</files>
+	<languages folder="administrator/language">
+		##ADMINLANGUAGEFILES##
+	</languages>
+	<media destination="@@PLUGINNAME@@" folder="media/@@PLUGINNAME@@">
+		##MEDIAPACKAGEFILES##
+	</media>
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+				<field name="section" type="radio"
+				       default="3"
+				       class="btn-group"
+				       description="PLG_TWOFACTORAUTH_VASCO_SECTION_DESC"
+				       label="PLG_TWOFACTORAUTH_VASCO_SECTION_LABEL"
+						>
+					<option value="1">PLG_TWOFACTORAUTH_VASCO_SECTION_SITE</option>
+					<option value="2">PLG_TWOFACTORAUTH_VASCO_SECTION_ADMIN</option>
+					<option value="3">PLG_TWOFACTORAUTH_VASCO_SECTION_BOTH</option>
+				</field>
+
+				<field name="client_id" type="text"
+				       default=""
+				       description="PLG_TWOFACTORAUTH_MYDIGIPASS_CLIENT_ID_DESC"
+				       label="PLG_TWOFACTORAUTH_MYDIGIPASS_CLIENT_ID"
+						/>
+
+				<field name="client_secret" type="text"
+				       default=""
+				       description="PLG_TWOFACTORAUTH_MYDIGIPASS_CLIENT_SECRET_DESC"
+				       label="PLG_TWOFACTORAUTH_MYDIGIPASS_CLIENT_SECRET"
+						/>
+
+			</fieldset>
+		</fields>
+	</config>
+</extension>

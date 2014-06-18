@@ -1,0 +1,13 @@
+build.version=dev
+component.name=mydigipass
+component.upperName=MYDIGIPASS
+plugins=plg_twofactorauth_mydigipass
+modules_admin=
+libraries=compojoom
+; FTP Options
+ftp.host=ftp.example.com
+ftp.port=21
+ftp.username=username
+ftp.password=password
+ftp.dir=/path/to/directory
+ftp.mode=binary
