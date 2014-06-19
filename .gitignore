@@ -7,6 +7,7 @@
 /source/media/com_hotspots/kmls
 tiles
 /source/administrator/components/com_hotspots/version.php
+.DS_STORE
 
 /docs/Hotspots.xml~
 /source/administrator/components/com_hotspots/liveupdate/classes

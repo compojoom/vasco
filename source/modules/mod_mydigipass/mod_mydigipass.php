@@ -14,16 +14,10 @@ defined('_JEXEC') or die('Restricted access');
 $moduleclass_sfx = htmlspecialchars($params->get('moduleclass_sfx'));
 
 $user = JFactory::getUser();
-
-JFactory::getSession()->set("digiadmin", 0);
 ?>
 <!-- START Mydigipass module by compojoom.com  -->
 <div class="mydigipass<?php echo $moduleclass_sfx ?>">
 	<?php
-	$inputCookie  = JFactory::getApplication()->input->cookie;
-	$value = $inputCookie->get("digipassadmin", 0);
-
-	var_dump($value);
 
 	if ($user->id == 0)
 	{
@@ -56,4 +50,4 @@ JFactory::getSession()->set("digiadmin", 0);
 	}
 	?>
 </div>
-<!-- END Matukio Upcoming module by compojoom.com  -->
+<!-- END Mydigipass module by compojoom.com  -->

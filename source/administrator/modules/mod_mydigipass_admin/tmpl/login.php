@@ -12,6 +12,7 @@ defined('_JEXEC') or die('Restricted access');
 
 JHTML::_('stylesheet', 'media/mod_mydigipass/css/basic.css');
 
+// Get plugin settings
 $plugin = JPluginHelper::getPlugin('system', 'mydigipass');
 $plgParams = new JRegistry($plugin->params);
 
@@ -21,8 +22,10 @@ $mdp_base_uri = ($plgParams->get("sandbox", 0)) ? "https://sandbox.mydigipass.co
 
 // Get input cookie object
 $inputCookie  = JFactory::getApplication()->input->cookie;
-$inputCookie->set('digipassadmin', 1, time() + 360, "/");
-$inputCookie->set('digipasssession', JFactory::getSession()->getId(), time() + 360, "/");
+
+// Set user cookies (because sessions in joomla are divided into frontend and backend sessions!)
+$inputCookie->set('digipassadmin', 1, time() + 120, "/");
+$inputCookie->set('digipasssession', JFactory::getSession()->getId(), time() + 120, "/");
 ?>
 <a data-text="secure-login" data-style="large" class="dpplus-connect" data-origin="<?php echo $mdp_base_uri ?>"
    data-client-id="<?php echo $client_id ?>" data-redirect-uri="<?php echo $redirect_uri; ?>"

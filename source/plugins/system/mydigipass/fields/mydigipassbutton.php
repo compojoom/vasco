@@ -39,12 +39,12 @@ class JFormFieldMydigipassbutton extends JFormField
 		$user = JFactory::getUser();
 
 		// We need the module params
-		$module = &JModuleHelper::getModule('mydigipass');
-		$moduleParams = new JRegistry($module->params);
+		$plugin = JPluginHelper::getPlugin('system', 'mydigipass');
+		$plgParams = new JRegistry($plugin->params);
 
-		$client_id = $moduleParams->get("clientid", "");
-		$redirect_uri = $moduleParams->get("redirecturi", "");
-		$mdp_base_uri = ($moduleParams->get("sandbox", 0)) ? "https://sandbox.mydigipass.com" : "https://mydigipass.com";
+		$client_id = $plgParams->get("clientid", "");
+		$redirect_uri = $plgParams->get("redirecturi", "");
+		$mdp_base_uri = ($plgParams->get("sandbox", 0)) ? "https://sandbox.mydigipass.com" : "https://mydigipass.com";
 
 		if ($user->id == 0)
 		{

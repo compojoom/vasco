@@ -8,7 +8,7 @@
 	<authorEmail>yves@compojoom.com</authorEmail>
 	<authorUrl>http://compojoom.com</authorUrl>
 	<version>@@VERSION@@</version>
-	<description>Connects your Joomla website with the MYDIGIPASS</description>
+	<description>MYDIGIPASS.com Frontend module</description>
 	<files>
 		##PACKAGEFILESMODULE##
 	</files>
@@ -23,10 +23,7 @@
 			<fieldset name="basic">
 			</fieldset>
 			<fieldset name="advanced">
-
-				<field name="moduleclass_sfx" type="text" default="" label="MOD_MATUKIO_UPCOMING_CLASS_SUFFIX"
-				       description="MOD_MATUKIO_UPCOMING_SUFFIX_DESC"/>
-
+				<field name="moduleclass_sfx" type="text" default="" label="CLASS_SUFFIX" />
 			</fieldset>
 		</fields>
 	</config>

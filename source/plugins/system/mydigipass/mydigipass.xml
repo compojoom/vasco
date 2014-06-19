@@ -22,24 +22,24 @@
 			<fieldset name="basic">
 				<field name="clientid" type="text"
 				       default=""
-				       description="MOD_MYDIGIPASS_CLIENT_ID_DESC"
-				       label="MOD_MYDIGIPASS_CLIENT_ID"
+				       description="PLG_SYSTEM_MYDIGIPASS_CLIENT_ID_DESC"
+				       label="PLG_SYSTEM_MYDIGIPASS_CLIENT_ID"
 						/>
 
 				<field name="clientsecret" type="text"
 				       default=""
-				       description="MOD_MYDIGIPASS_CLIENT_SECRET_DESC"
-				       label="MOD_MYDIGIPASS_CLIENT_SECRET"
+				       description="PLG_SYSTEM_MYDIGIPASS_CLIENT_SECRET_DESC"
+				       label="PLG_SYSTEM_MYDIGIPASS_CLIENT_SECRET"
 						/>
 
 				<field name="redirecturi" type="text"
 				       default=""
-				       description="MOD_MYDIGIPASS_REDIRECT_URI_DESC"
-				       label="MOD_MYDIGIPASS_REDIRECT_URI"
+				       description="PLG_SYSTEM_MYDIGIPASS_REDIRECT_URI_DESC"
+				       label="PLG_SYSTEM_MYDIGIPASS_REDIRECT_URI"
 						/>
 
-				<field name="sandbox" type="radio" default="1" label="MOD_MYDIGIPASS_SANDBOX"
-				       description="MOD_MYDIGIPASS_SANDBOX_DESC">
+				<field name="sandbox" type="radio" default="1" label="PLG_SYSTEM_MYDIGIPASS_SANDBOX"
+				       description="PLG_SYSTEM_MYDIGIPASS_SANDBOX_DESC">
 					<option value="1">JYES</option>
 					<option value="0">JNO</option>
 				</field>

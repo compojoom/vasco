@@ -1,9 +1,10 @@
 build.version=dev
 component.name=mydigipass
 component.upperName=MYDIGIPASS
-plugins=plg_twofactorauth_mydigipass
-modules_admin=
-libraries=compojoom
+plugins=plg_system_mydigipass,plg_system_mydigipass_admin
+modules_admin=mod_mydigipass_admin
+modules=mod_mydigipass
+libraries=
 ; FTP Options
 ftp.host=ftp.example.com
 ftp.port=21

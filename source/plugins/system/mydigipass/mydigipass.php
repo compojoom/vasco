@@ -34,6 +34,7 @@ class PlgSystemMydigipass extends JPlugin
 
 		$code = $input->get('code', 0);
 
+		// Check if the oauth code is supplied
 		if (!$code)
 		{
 			return true;
@@ -42,15 +43,14 @@ class PlgSystemMydigipass extends JPlugin
 		// Check if we connect or login
 		$user = JFactory::getUser();
 
-		$inputCookie  = JFactory::getApplication()->input->cookie;
-		$isAdmin = $inputCookie->get("digipassadmin", 0);
+		$inputCookie = JFactory::getApplication()->input->cookie;
+		$isAdmin     = $inputCookie->get("digipassadmin", 0);
 
 		// Fix
-		$moduleParams = $this->params;
-		$mdp_base_uri = ($moduleParams->get("sandbox", 0)) ? "https://sandbox.mydigipass.com" : "https://mydigipass.com";
-		$client_id = $moduleParams->get("clientid", "");
-		$client_secret = $moduleParams->get("clientsecret", "");
-		$redirect_uri = $moduleParams->get("redirecturi", "");
+		$mdp_base_uri  = ($this->params->get("sandbox", 0)) ? "https://sandbox.mydigipass.com" : "https://mydigipass.com";
+		$client_id     = $this->params->get("clientid", "");
+		$client_secret = $this->params->get("clientsecret", "");
+		$redirect_uri  = $this->params->get("redirecturi", "");
 
 		if ($user->id > 0)
 		{
@@ -69,12 +69,10 @@ class PlgSystemMydigipass extends JPlugin
 			$options->set("clientsecret", $client_secret);
 			$options->set("tokenurl", $mdp_base_uri . "/oauth/token");
 
-			$scope = null;
-
 			$service = new JOAuth2Client($options);
 
-			 try
-			 {
+			try
+			{
 				$return = $service->authenticate();
 
 				if (empty($return))
@@ -82,11 +80,10 @@ class PlgSystemMydigipass extends JPlugin
 					throw new RuntimeException("Error connecting profile");
 				}
 
-				$token = $return["access_token"];
-				$uuid = $return["uuid"];
+				$uuid  = $return["uuid"];
 
 				// Save the uuid in the profile database
-				$db = JFactory::getDbo();
+				$db    = JFactory::getDbo();
 				$query = "INSERT INTO #__user_profiles VALUES(
 								" . $db->quote($user->id) . ",
 								" . $db->quote("uuid") . ",
@@ -94,30 +91,28 @@ class PlgSystemMydigipass extends JPlugin
 								0
 							)";
 
-				 $db->setQuery($query);
-				 $db->execute();
+				$db->setQuery($query);
+				$db->execute();
 
-				 if ($db->getErrorNum())
-				 {
+				if ($db->getErrorNum())
+				{
 					throw new Exception("Error saving uuid " . $db->getErrorMsg());
-				 }
-			 }
-			 catch(Exception $e)
-			 {
-				 echo 'Exception caught: ' . $e->getMessage();
-			 }
+				}
+			}
+			catch (Exception $e)
+			{
+				echo 'Exception caught: ' . $e->getMessage();
+			}
 		}
 		else
 		{
-			// Login
+			// Login request
 			$options = new JRegistry();
 
 			$options->set("redirecturi", $redirect_uri);
 			$options->set("clientid", $client_id);
 			$options->set("clientsecret", $client_secret);
 			$options->set("tokenurl", $mdp_base_uri . "/oauth/token");
-
-			$scope = null;
 
 			$service = new JOAuth2Client($options);
 
@@ -146,90 +141,91 @@ class PlgSystemMydigipass extends JPlugin
 					// Show connect button only if not connected yet
 					throw new Exception('You are not connected with this Joomla site!');
 				}
-				else
+
+				$user = JFactory::getUser($result->user_id);
+
+				if (empty($user) || $user->block)
 				{
-					$user = JFactory::getUser($result->user_id);
-
-					if (empty($user) || $user->block)
-					{
-						throw new Exception('Your user account was not found!');
-					}
-
-					// Login User
-					// Get the global JAuthentication object.
-					jimport('joomla.user.authentication');
-
-					$authenticate = JAuthentication::getInstance();
-
-					// Get plugins
-					$plugins = JPluginHelper::getPlugin('authentication');
-
-					// Create authentication response
-					$response = new JAuthenticationResponse;
-
-					$response->username = $user->username;
-					$response->fullname = $user->name;
-					$response->password = $user->password;
-					$response->status = JAuthentication::STATUS_SUCCESS;
-
-					$opt = array();
-
-					$opt['action'] = "core.login";
-
-					if ($isAdmin)
-					{
-						$opt['action'] = "core.login.admin";
-						$opt['clientid'] = 1;
-					}
-
-					/*
-					 * Validate that the user should be able to login (different to being authenticated).
-					 * This permits authentication plugins blocking the user.
-					 */
-					$authorisations = $authenticate->authorise($response, $opt);
-
-					// Import the user plugin group.
-					JPluginHelper::importPlugin('user');
-					$dispatcher = JEventDispatcher::getInstance();
-
-					// OK, the credentials are authenticated and user is authorised.  Let's fire the onLogin event.
-					$results = $dispatcher->trigger('onUserLogin', array((array) $response, $opt));
-
-					$user = JFactory::getUser();
-
-					$user->set('cookieLogin', true);
-
-					$opt['user'] = $user;
-					$opt['responseType'] = $response->type;
-
-					// The user is successfully logged in. Run the after login events
-					$dispatcher->trigger('onUserAfterLogin', array($opt));
+					throw new Exception('Your user account was not found!');
 				}
+
+				// Login User
+				// Get the global JAuthentication object.
+				jimport('joomla.user.authentication');
+
+				// We need that for the auth response to work! (Don't delete)
+				$authenticate = JAuthentication::getInstance();
+
+				// Get plugins
+				$plugins = JPluginHelper::getPlugin('authentication');
+
+				// Create authentication response
+				$response = new JAuthenticationResponse;
+
+				$response->username = $user->username;
+				$response->fullname = $user->name;
+				$response->password = $user->password;
+				$response->status   = JAuthentication::STATUS_SUCCESS;
+
+				$opt = array();
+
+				$opt['action'] = "core.login";
+
+				if ($isAdmin)
+				{
+					$opt['action']   = "core.login.admin";
+					$opt['clientid'] = 1;
+				}
+
+				// Import the user plugin group.
+				JPluginHelper::importPlugin('user');
+				$dispatcher = JEventDispatcher::getInstance();
+
+				// OK, the credentials are authenticated and user is authorised.  Let's fire the onLogin event.
+				$results = $dispatcher->trigger('onUserLogin', array((array) $response, $opt));
+
+				$user = JFactory::getUser();
+
+				$user->set('cookieLogin', true);
+
+				$opt['user']         = $user;
+				$opt['responseType'] = $response->type;
+
+				// The user is successfully logged in. Run the after login events
+				$dispatcher->trigger('onUserAfterLogin', array($opt));
+
 
 				// Redirect to backend
 				if ($isAdmin)
 				{
+					// Generate token for security
 
-					$ssid = $inputCookie->get("digipasssession", 0);
+					$token = JSession::getFormToken(true);
 
-					$query = "SELECT * FROM #__session WHERE session_id = " . $db->quote($ssid);
+					// Save the token in the profile database
+					$db    = JFactory::getDbo();
+					$query = "INSERT INTO #__user_profiles VALUES(
+								" . $db->quote($user->id) . ",
+								" . $db->quote("token") . ",
+								" . $db->quote($token) . ",
+								0
+							)";
 
 					$db->setQuery($query);
-					$ses = $db->loadObject();
+					$db->execute();
 
-					// Mainpulate that user data?!
-					$data = $ses->data;
+					// TODO Exception handling..
+					if ($db->getErrorNum())
+					{
+						throw new Exception("Error saving token " . $db->getErrorMsg());
+					}
 
-					$query = "UPDATE #__session SET client_id = 1, guest = 0, userid = " . $user->id
-						. ", username = " . $db->quote($user->username) . " WHERE session_id = " . $db->quote($ssid);
+					$inputCookie->set('digitoken', $token, time() + 120, "/");
 
-					$db->setQuery($query);
-					$rs = $db->execute();
-
-					return JFactory::getApplication()->redirect(JUri::base() . "administrator");
+					return JFactory::getApplication()->redirect(JUri::base() . "administrator/index.php?digiadmin=1&uuid=" . $uuid);
 				}
 			}
-			catch(Exception $e)
+			catch (Exception $e)
 			{
 				echo 'Exception caught: ' . $e->getMessage();
 			}
@@ -239,8 +235,8 @@ class PlgSystemMydigipass extends JPlugin
 	/**
 	 * Extends the login form with our button
 	 *
-	 * @param   JForm    $form  - The form
-	 * @param   JObject  $data  - The date
+	 * @param   JForm   $form - The form
+	 * @param   JObject $data - The date
 	 *
 	 * @return  boolean
 	 */
