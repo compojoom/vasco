@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<extension type="package" version="3.x">
+	<name>MyDigipass Package for Joomla!</name>
+	<author>http://compojoom.com</author>
+	<creationDate>@@DATE@@</creationDate>
+	<packagename>mydigipass</packagename>
+	<version>@@VERSION@@</version>
+	<url>http://mydigipass.com</url>
+	<packager>compojoom</packager>
+	<packagerurl>https://compojoom.com</packagerurl>
+	<description>Package that contains all mydigipass module and plugins</description>
+	<update>https://compojoom.com/update</update>
+	<files>
+		<file type="module" id="mod_mydigipass" client="site">mod_mydigipass-@@VERSION@@.zip</file>
+		<file type="module" id="mod_mydigipass_admin" client="admin">mod_mydigipass_admin-@@VERSION@@.zip</file>
+		<file type="plugin" id="mydigipass" group="system">plg_system_mydigipass-@@VERSION@@.zip</file>
+	</files>
+</extension>

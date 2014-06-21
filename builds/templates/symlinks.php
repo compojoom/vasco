@@ -10,8 +10,5 @@
 
 // Path are relative from source directory of the current project
 $symlinks = array(
-	'/../../akeeba/liveupdate/code' => '/administrator/components/com_hotspots/liveupdate',
-	'/../../lib_compojoom/source/libraries' => '/libraries',
-	'/../../lib_compojoom/source/language' => '/language',
-	'/../../lib_compojoom/source/media' => '/media'
+
 );

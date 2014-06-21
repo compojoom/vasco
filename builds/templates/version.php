@@ -8,6 +8,3 @@
  */
 defined('_JEXEC') or die('Restricted Access');
 
-define('HOTSPOTS_PRO', '@@PRO@@');
-define('HOTSPOTS_VERSION', '@@VERSION@@');
-define('HOTSPOTS_DATE', '@@DATE@@');

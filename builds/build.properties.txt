@@ -1,6 +1,5 @@
 build.version=dev
-component.name=mydigipass
-component.upperName=MYDIGIPASS
+package.name=mydigipass
 plugins=plg_system_mydigipass,plg_system_mydigipass_admin
 modules_admin=mod_mydigipass_admin
 modules=mod_mydigipass
