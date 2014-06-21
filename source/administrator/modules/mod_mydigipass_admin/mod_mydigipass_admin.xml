@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <extension type="module" version="2.5" method="upgrade" client="site">
-	<name>@@MODULENAME@@</name>
+	<name>mod_mydigipass_admin</name>
 	<creationDate>@@DATE@@</creationDate>
 	<author>Compojoom</author>
 	<copyright>(C) 2014 Compojoom</copyright>
