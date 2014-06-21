@@ -7,7 +7,7 @@
         from the build directory to build the component, modules and plugins
 -->
 
-<project name="com_hotspots" default="buildZip">
+<project name="pkg_vasco" default="buildZip">
 	<property file="./build.properties"/>
 
 	<taskdef name="extfile" classname="phingext.listJPackageFilesTask" classpath="../../buildtools"/>
