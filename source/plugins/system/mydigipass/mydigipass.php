@@ -52,7 +52,8 @@ class PlgSystemMydigipass extends JPlugin
 		$client_secret = $this->params->get("clientsecret", "");
 		$redirect_uri  = $this->params->get("redirecturi", "");
 
-		if ($user->id > 0)
+		// Check if should connect - on admin we always login, even if the user is logged into the frontend
+		if ($user->id > 0 && !$isAdmin)
 		{
 			// Connect
 			$session = JFactory::getSession();
@@ -80,7 +81,7 @@ class PlgSystemMydigipass extends JPlugin
 					throw new RuntimeException("Error connecting profile");
 				}
 
-				$uuid  = $return["uuid"];
+				$uuid = $return["uuid"];
 
 				// Save the uuid in the profile database
 				$db    = JFactory::getDbo();
@@ -106,26 +107,25 @@ class PlgSystemMydigipass extends JPlugin
 		}
 		else
 		{
-			// Login request
-			$options = new JRegistry();
-
-			$options->set("redirecturi", $redirect_uri);
-			$options->set("clientid", $client_id);
-			$options->set("clientsecret", $client_secret);
-			$options->set("tokenurl", $mdp_base_uri . "/oauth/token");
-
-			$service = new JOAuth2Client($options);
-
 			try
 			{
+				// Login request
+				$options = new JRegistry();
+
+				$options->set("redirecturi", $redirect_uri);
+				$options->set("clientid", $client_id);
+				$options->set("clientsecret", $client_secret);
+				$options->set("tokenurl", $mdp_base_uri . "/oauth/token");
+
+				$service = new JOAuth2Client($options);
 				$return = $service->authenticate();
+
+				$uuid = $return["uuid"];
 
 				if (empty($return))
 				{
-					throw new RuntimeException("Error connecting profile");
+					throw new RuntimeException("Error loging in");
 				}
-
-				$uuid = $return["uuid"];
 
 				// Let's check if the user is already connected
 				$db = JFactory::getDbo();
@@ -149,57 +149,58 @@ class PlgSystemMydigipass extends JPlugin
 					throw new Exception('Your user account was not found!');
 				}
 
-				// Login User
-				// Get the global JAuthentication object.
-				jimport('joomla.user.authentication');
-
-				// We need that for the auth response to work! (Don't delete)
-				$authenticate = JAuthentication::getInstance();
-
-				// Get plugins
-				$plugins = JPluginHelper::getPlugin('authentication');
-
-				// Create authentication response
-				$response = new JAuthenticationResponse;
-
-				$response->username = $user->username;
-				$response->fullname = $user->name;
-				$response->password = $user->password;
-				$response->status   = JAuthentication::STATUS_SUCCESS;
-
-				$opt = array();
-
-				$opt['action'] = "core.login";
-
-				if ($isAdmin)
+				if (!$isAdmin)
 				{
-					$opt['action']   = "core.login.admin";
-					$opt['clientid'] = 1;
+					// Login User
+					// Get the global JAuthentication object.
+					jimport('joomla.user.authentication');
+
+					// We need that for the auth response to work! (Don't delete)
+					$authenticate = JAuthentication::getInstance();
+
+					// Get plugins
+					$plugins = JPluginHelper::getPlugin('authentication');
+
+					// Create authentication response
+					$response = new JAuthenticationResponse;
+
+					$response->username = $user->username;
+					$response->fullname = $user->name;
+					$response->password = $user->password;
+					$response->status   = JAuthentication::STATUS_SUCCESS;
+
+					$opt = array();
+
+					$opt['action'] = "core.login";
+
+					if ($isAdmin)
+					{
+						$opt['action']   = "core.login.admin";
+						$opt['clientid'] = 1;
+					}
+
+					// Import the user plugin group.
+					JPluginHelper::importPlugin('user');
+					$dispatcher = JEventDispatcher::getInstance();
+
+					// OK, the credentials are authenticated and user is authorised.  Let's fire the onLogin event.
+					$results = $dispatcher->trigger('onUserLogin', array((array) $response, $opt));
+
+					$user = JFactory::getUser();
+
+					$user->set('cookieLogin', true);
+
+					$opt['user']         = $user;
+					$opt['responseType'] = $response->type;
+
+					// The user is successfully logged in. Run the after login events
+					$dispatcher->trigger('onUserAfterLogin', array($opt));
+
 				}
-
-				// Import the user plugin group.
-				JPluginHelper::importPlugin('user');
-				$dispatcher = JEventDispatcher::getInstance();
-
-				// OK, the credentials are authenticated and user is authorised.  Let's fire the onLogin event.
-				$results = $dispatcher->trigger('onUserLogin', array((array) $response, $opt));
-
-				$user = JFactory::getUser();
-
-				$user->set('cookieLogin', true);
-
-				$opt['user']         = $user;
-				$opt['responseType'] = $response->type;
-
-				// The user is successfully logged in. Run the after login events
-				$dispatcher->trigger('onUserAfterLogin', array($opt));
-
-
-				// Redirect to backend
-				if ($isAdmin)
+				else
 				{
+					// Redirect to backend
 					// Generate token for security
-
 					$token = JSession::getFormToken(true);
 
 					// Save the token in the profile database
