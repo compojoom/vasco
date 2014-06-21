@@ -25,6 +25,8 @@ class PlgSystemMydigipass_Admin extends JPlugin
 	 */
 	public function onAfterInitialise()
 	{
+
+
 		$input = JFactory::getApplication()->input;
 
 		// Check if mydigipass get parameter is set
@@ -32,6 +34,7 @@ class PlgSystemMydigipass_Admin extends JPlugin
 		{
 			return true;
 		}
+
 
 		$uuid = $input->get('uuid', 0);
 
@@ -51,7 +54,7 @@ class PlgSystemMydigipass_Admin extends JPlugin
 
 		$inputCookie  = JFactory::getApplication()->input->cookie;
 		$isAdmin = $inputCookie->get("digipassadmin", 0);
-		$digisession = $inputCookie->get("digisession", 0);
+		$digisession = $inputCookie->get("digipasssession", 0);
 		$token = $inputCookie->get('digitoken', 0);
 
 		$session = JFactory::getSession();
