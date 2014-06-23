@@ -8,6 +8,7 @@
 	<url>http://mydigipass.com</url>
 	<packager>compojoom</packager>
 	<packagerurl>https://compojoom.com</packagerurl>
+	<license>http://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
 	<description>Package that contains all mydigipass module and plugins</description>
 	<update>https://compojoom.com/index.php?option=com_ars&amp;view=update&amp;format=ini&amp;id=25</update>
 	<files>
