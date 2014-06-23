@@ -35,7 +35,7 @@ You will also need the following path structure on your system
 
 ### Creating the zip package
 
-Navigate to the pkg_mydigipass/builds directory. Rename the build.properties.txt to build properties
+Navigate to the pkg_mydigipass/builds directory. Rename the build.properties.txt to build.properties
 and execute the following command:
 
 	phing
