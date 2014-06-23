@@ -21,8 +21,20 @@ $mdp_base_uri = ($plgParams->get("sandbox", 0)) ? "https://sandbox.mydigipass.co
 ?>
 
 <div class="mydigipass<?php echo $moduleclass_sfx ?>">
-	<a class="dpplus-connect" data-origin="<?php echo $mdp_base_uri; ?>" data-client-id="<?php echo $client_id ?>"
-	   data-redirect-uri="<?php echo $redirect_uri ?>" href="#">Mydigipass.com Secure Connect</a>
+	<p class="alert alert-info">
+		<?php echo JText::_('MOD_MYDIGIPASS_CONNECT_HELP_TEXT'); ?>
+	</p>
 
+	<a data-text="connect"
+	   data-style="large"
+	   class="dpplus-connect"
+	   data-origin="<?php echo $mdp_base_uri; ?>"
+	   data-client-id="<?php echo $client_id ?>"
+	   data-redirect-uri="<?php echo $redirect_uri ?>"
+	   title="Connect with MYDIGIPASS.COM"
+	   href="#"
+	   >Mydigipass.com Secure Connect</a>
 	<script type="text/javascript" src="https://static.mydigipass.com/dp_connect.js"></script>
+
+
 </div>
