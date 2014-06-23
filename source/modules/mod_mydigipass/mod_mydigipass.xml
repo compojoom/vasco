@@ -21,6 +21,16 @@
 	<config>
 		<fields name="params">
 			<fieldset name="basic">
+				<field name="show_message_already_connected" type="radio" default="1"
+				       class="btn-group btn-group-yesno"
+				       label="MOD_MYDIGIPASS_ALREADY_CONNECTED_LABEL"
+				       description="MOD_MYDIGIPASS_ALREADY_CONNECTED_DESC"
+					>
+					<option value="1">JYES
+					</option>
+					<option value="0">JNO
+					</option>
+				</field>
 			</fieldset>
 			<fieldset name="advanced">
 				<field name="moduleclass_sfx" type="text" default="" label="CLASS_SUFFIX" />

@@ -14,40 +14,38 @@ defined('_JEXEC') or die('Restricted access');
 $moduleclass_sfx = htmlspecialchars($params->get('moduleclass_sfx'));
 
 $user = JFactory::getUser();
-?>
-<!-- START Mydigipass module by compojoom.com  -->
-<div class="mydigipass<?php echo $moduleclass_sfx ?>">
-	<?php
 
-	if ($user->id == 0)
+if ($user->id)
+{
+	// Let's check if the user is already connected
+	$db = JFactory::getDbo();
+
+	$db->setQuery(
+		'SELECT profile_key, profile_value FROM #__user_profiles' .
+		' WHERE user_id = ' . (int) $user->id .
+		' AND profile_key = ' . $db->quote("uuid") .
+		' ORDER BY ordering'
+	);
+
+	$result = $db->loadObject();
+}
+
+if ($user->id == 0)
+{
+	// Show login button
+	require JModuleHelper::getLayoutPath('mod_mydigipass', 'login');
+}
+else
+{
+	if (empty($result))
 	{
-		// Show login button
-		require JModuleHelper::getLayoutPath('mod_mydigipass', 'login');
+		// Show connect button only if not connected yet
+		require JModuleHelper::getLayoutPath('mod_mydigipass', 'connect');
 	}
 	else
 	{
-		// Let's check if the user is already connected
-		$db = JFactory::getDbo();
-
-		$db->setQuery(
-			'SELECT profile_key, profile_value FROM #__user_profiles' .
-			' WHERE user_id = '.(int) $user->id .
-			' AND profile_key = ' . $db->quote("uuid").
-			' ORDER BY ordering'
-		);
-
-		$result = $db->loadObject();
-
-		if (empty($result))
-		{
-			// Show connect button only if not connected yet
-			require JModuleHelper::getLayoutPath('mod_mydigipass', 'connect');
-		}
-		else
-		{
+		if($params->get('show_message_already_connected', 0)) {
 			echo JText::_("MOD_MYDIGIPASS_YOU_ARE_ALREADY_CONNECTED");
 		}
 	}
-	?>
-</div>
-<!-- END Mydigipass module by compojoom.com  -->
+}
