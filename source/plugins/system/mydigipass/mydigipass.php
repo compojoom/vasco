@@ -17,6 +17,8 @@ defined('_JEXEC') or die('Restricted access');
  */
 class PlgSystemMydigipass extends JPlugin
 {
+	public $autoloadLanguage = true;
+
 	/**
 	 * Checks if connect / login token is there, if yes -> Connects user to mydigipass
 	 *
@@ -26,18 +28,25 @@ class PlgSystemMydigipass extends JPlugin
 	{
 		$input = JFactory::getApplication()->input;
 
-		// Check if mydigipass get parameter is set
-		if ($input->get('mydigipass', 0))
+		try
 		{
-			$this->frontend();
-			return true;
-		}
+			// Check if mydigipass get parameter is set
+			if ($input->get('mydigipass', 0))
+			{
+				$this->frontend();
+				return true;
+			}
 
-		// Check if mydigipass get parameter is set
-		if ($input->getInt('digiadmin', 0))
-		{
-			$this->backend();
-			return true;
+			// Check if mydigipass get parameter is set
+			if ($input->getInt('digiadmin', 0))
+			{
+				$this->backend();
+				return true;
+			}
+		}
+		catch (Exception $e) {
+			JFactory::getApplication()->enqueueMessage($e->getMessage());
+			JFactory::getApplication()->redirect(Juri::base());
 		}
 
 		return true;
@@ -91,7 +100,7 @@ class PlgSystemMydigipass extends JPlugin
 
 		if (empty($result))
 		{
-			throw new Exception('The security token does not match!');
+			throw new Exception(JText::_('PLG_SYSTEM_MYDIGIPASS_THE_TOKEN_DOESNT_MATCH'));
 		}
 
 		$this->deleteToken($token);
@@ -147,50 +156,32 @@ class PlgSystemMydigipass extends JPlugin
 		$service = new JOAuth2Client($options);
 
 		// Check if should connect - on admin we always login, even if the user is logged into the frontend
-		if ($user->id > 0 && !$isAdmin)
+		try
 		{
-			// Connect
-			$session = JFactory::getSession();
-
-			// configuration of service
-			$session->set('base_uri', $mdp_base_uri);
-			$session->set('client_id', $client_id);
-			$session->set('client_secret', $client_secret);
-
-			try
+			if ($user->id > 0 && !$isAdmin)
 			{
-				$return = $service->authenticate();
+				// Connect
+				$session = JFactory::getSession();
 
-				if (empty($return))
-				{
-					throw new RuntimeException("Error connecting profile");
-				}
+				// configuration of service
+				$session->set('base_uri', $mdp_base_uri);
+				$session->set('client_id', $client_id);
+				$session->set('client_secret', $client_secret);
+
+				$return = $service->authenticate();
 
 				// Save the uuid in the database
 				$this->insertIntoProfile($user->id, 'uuid', $return['uuid']);
 			}
-			catch (Exception $e)
-			{
-				echo 'Exception caught: ' . $e->getMessage();
-			}
-		}
-		else
-		{
-			try
+			else
 			{
 				$return = $service->authenticate();
-
-				if (empty($return))
-				{
-					throw new RuntimeException("Error loging in");
-				}
 
 				$user = $this->getUser($return["uuid"]);
 
 				if (!$isAdmin)
 				{
 					$this->login($user, array('action' => 'core.login'));
-					JFactory::getApplication()->redirect(Juri::base());
 				}
 				else
 				{
@@ -210,10 +201,10 @@ class PlgSystemMydigipass extends JPlugin
 					return true;
 				}
 			}
-			catch (Exception $e)
-			{
-				echo 'Exception caught: ' . $e->getMessage();
-			}
+		}
+		catch (Exception $e)
+		{
+			throw new Exception($e->getMessage());
 		}
 
 		return true;
@@ -222,9 +213,11 @@ class PlgSystemMydigipass extends JPlugin
 	/**
 	 * Inserts a row in the user_profile table
 	 *
-	 * @param   int     $id     - the user id
-	 * @param   string  $key    - the key
-	 * @param   string  $value  - the value to store
+	 * @param   int    $id    - the user id
+	 * @param   string $key   - the key
+	 * @param   string $value - the value to store
+	 *
+	 * @throws Exception
 	 */
 	private function insertIntoProfile($id, $key, $value) {
 		// Save the row in the profile database
@@ -244,7 +237,7 @@ class PlgSystemMydigipass extends JPlugin
 		}
 		catch (Exception $e)
 		{
-			echo "Error saving " . $key . ':' . $e->getMessage();
+			throw new Exception(JText::sprintf('PLG_SYSTEM_MYDIGIPASS_ERROR_SAVING', $key , $e->getMessage()));
 		}
 	}
 
@@ -262,14 +255,14 @@ class PlgSystemMydigipass extends JPlugin
 		if (empty($result))
 		{
 			// Show connect button only if not connected yet
-			throw new Exception('You are not connected with this Joomla site!');
+			throw new Exception(JText::_('PLG_SYSTEM_MYDIGIPASS_NOT_CONNECTED_WITH_THE_SITE'));
 		}
 
 		$user = JFactory::getUser($result->user_id);
 
 		if (empty($user) || $user->block)
 		{
-			throw new Exception('Your user account was not found!');
+			throw new Exception(JText::_('PLG_SYSTEM_MYDIGIPASS_ACCOUNT_DOESNT_EXIST'));
 		}
 
 		return $user;
