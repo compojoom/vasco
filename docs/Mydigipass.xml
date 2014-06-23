@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
+<book>
+  <bookinfo>
+    <title>Mydigipass User's Guide</title>
+
+    <author>
+      <firstname>Daniel</firstname>
+
+      <surname>Dimitrov</surname>
+
+      <affiliation>
+        <orgname>compojoom.com</orgname>
+      </affiliation>
+    </author>
+
+    <pubdate>23.06.2014</pubdate>
+
+    <legalnotice>
+      <para>Permission is granted to copy, distribute and/or modify this
+      document under the terms of the GNU Free Documentation License, Version
+      1.3 or any later version published by the Free Software Foundation; with
+      no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts. A
+      copy of the license is included in the appendix entitled "The GNU Free
+      Documentation License".</para>
+    </legalnotice>
+
+    <abstract>
+      <para>This book covers the use of Mydigipass for Joomla package. It does
+      not cover any other extension available on compojoom.com .</para>
+    </abstract>
+  </bookinfo>
+
+  <article>
+    <para><revhistory>
+        <revision>
+          <revnumber>MyDigipass 1.0 - Revision 0.1</revnumber>
+
+          <date>23.06.2014</date>
+
+          <author>
+            <firstname>Daniel</firstname>
+
+            <surname>Dimitrov</surname>
+          </author>
+        </revision>
+      </revhistory></para>
+  </article>
+
+  <chapter>
+    <title>Introduction</title>
+
+    <section>
+      <title>Introducing Mydigipass</title>
+
+      <para><ulink url="http://mydigipass.com">Mydigipass.com</ulink>™ is a
+      security service aiming to protect your online identity. The service is
+      developed by the VASCO® Data Security GmbH and through this
+      documentation we will just call it Mydigipass API. </para>
+
+      <para>The Mydigipass package distributed through compojoom.com is a
+      collection of modules and plugins that makes integrating the mydigipass
+      API with your Joomla! site a breeze. </para>
+
+      <para>So what does mydigipass.com exactly do?</para>
+
+      <para>On typical Joomla! site, users login with email addresses and
+      static passwords: <emphasis>something they know</emphasis>. Two-factor
+      authentication adds <emphasis>something they have</emphasis> to the
+      authentication process. If you install and configure the mydigipass
+      package on your Joomla site, users will securely login by generating a
+      OTP (one time password) using their authenticator by scanning a QR code
+      with their mobile devices, authenticating via the embedded DIGIPASS in
+      Intel® IPT on their laptop, ob by using on of the digipass hardware
+      tokens. The authenticator is <emphasis>what the user has </emphasis>and
+      is the second authentication factor. </para>
+    </section>
+  </chapter>
+
+  <chapter>
+    <title>Installation and updates</title>
+
+    <para>Installing Mydigipass is no different than installing any other
+    Joomla!™ extension on your site. You can read the complete instructions
+    for installing Joomla!™ extensions on the <ulink
+    url="http://help.joomla.org/content/view/1476/235/">official help
+    page</ulink> .Throughout this chapter we assume that you are familiar with
+    these instructions and we will not duplicate them.</para>
+
+    <section>
+      <title>Getting the installation packages</title>
+
+      <para>The mydigipass package is located under Downloads -&gt; Official
+      releases -&gt; Mydigipass. The releases are listed with the newest
+      release always on top. Once you click on the release number you'll see
+      the available files for download.</para>
+
+      <para>You can use the installation package to update from previous
+      version as well; just install it, without uninstalling the old
+      package.</para>
+
+      <para><note>
+          <para>The zip package includes all available modules and plugins.
+          During the installation they will be installed automatically.</para>
+        </note></para>
+    </section>
+
+    <section>
+      <title>Installing a developer release</title>
+
+      <para>In normal cases you won't have to install developer releases. You
+      are advised to go to the download area and grab the normal package as
+      described in the past chapter. However there are situations where things
+      are not working - if we confirm the problem, we fix it and generally
+      release a developer release to test the fix. We proceed the same way
+      with new features - we add them and create a developer release for those
+      of you who like to experiment with them before the official release gets
+      published.</para>
+
+      <para>To get the latest developer release navigate to Downloads -&gt;
+      Developer Releases -&gt; Mydigipass. The latest release is always on
+      top. Download the package and install it through the Joomla extension
+      manager.</para>
+
+      <important>
+        <para>Please note: Having a backup is never a bad idea!</para>
+      </important>
+    </section>
+
+    <section>
+      <title>Updating to the latest version</title>
+
+      <section>
+        <title>Checking for the latest version and upgrading</title>
+
+        <para>We use the standard Joomla update manager to notify you about
+        updates. In your Joomla backend click on Extensions-&gt; Extension
+        Manager -&gt; Update and click on Find updates.</para>
+      </section>
+    </section>
+
+    <section>
+      <title>Uninstall</title>
+
+      <para>You can uninstall the Mydigipass package just as any other Joomla
+      extension. Just navigate to Extensions -&gt; Extension Manager -&gt;
+      Manage -&gt; search for Mydigipass (package), select it and click
+      uninstall. The uninstall process will remove all installed plugins and
+      modules as well.</para>
+    </section>
+  </chapter>
+
+  <chapter>
+    <title>Using Mydigipass for Joomla</title>
+
+    <para>If you've installed the mydigipass plugin as described in the past
+    chapter then we've installed the following plugins and modules on your
+    Joomla website</para>
+
+    <para><orderedlist>
+        <listitem>
+          <para>System - Mydigipass</para>
+
+          <para>This plugin handles the authentication against the mydigipass
+          API and logs you into your Joomla site.</para>
+        </listitem>
+
+        <listitem>
+          <para>Mydigipass module</para>
+
+          <para>This module shows a button for login or connecting in the
+          frontend of your site</para>
+        </listitem>
+
+        <listitem>
+          <para>Mydigipass admin module</para>
+
+          <para>This module shows a login button on the administrator login in
+          the backend.</para>
+        </listitem>
+      </orderedlist></para>
+
+    <para>For more information on the above plugins and modules look at the
+    next chapters.</para>
+
+    <section>
+      <title>System - Mydigipass</title>
+
+      <para>This plugin handles the authentication against the mydigipass API
+      and logs the user into your Joomla site. You'll need to configure it in
+      order for it to communicate properly with mydigipass API.</para>
+
+      <para>The configuration options are as follow:</para>
+
+      <variablelist>
+        <varlistentry>
+          <term>Client id</term>
+
+          <listitem>
+            <para>Enter the client id of your developer.mydigipass.com
+            project. </para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Client secret</term>
+
+          <listitem>
+            <para>Enter the client secret code of your
+            developer.mydigipass.com project.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Redirect URI</term>
+
+          <listitem>
+            <para>Copy the URI provided on the right into the options of your
+            developer.mydigipass.com application.</para>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term>Sandbox mode</term>
+
+          <listitem>
+            <para>If in sandbox mode you can test the plugin and make sure
+            that everything works as expected. If you are ready to go live,
+            then you need to request API credentials from mydigipass. Look for
+            the Go live button in your developer.mydigipass.com
+            account.</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </section>
+
+    <section>
+      <title>Mydigipass module</title>
+
+      <para>This module shows a "mydigipass.com secure login" button to
+      non-logged in users. And "mydigipass.com connect" button to logged in
+      users. If the user has already connected his profile you have the option
+      to hide the module.</para>
+
+      <para>Module options:</para>
+
+      <variablelist>
+        <varlistentry>
+          <term>Show label already connected </term>
+
+          <listitem>
+            <para>Determines whether or not to show information to a user who
+            has his account already connected with mydigipass.com</para>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+    </section>
+
+    <section>
+      <title>Mydigipass admin module</title>
+
+      <para>This module shows a "mydigipass.com secure login" in the
+      administrator section of the website. </para>
+
+      <note>
+        <para>To make use of this function as administrator you have to
+        connect your account through the frontend first. </para>
+      </note>
+    </section>
+  </chapter>
+
+  <chapter>
+    <title>Where to go from here?</title>
+
+    <para>If you encounter any problems or have feature suggestions don't
+    hesitate to <ulink url="https://compojoom.com/about/contact-us">contact
+    us</ulink>!</para>
+  </chapter>
+</book>
