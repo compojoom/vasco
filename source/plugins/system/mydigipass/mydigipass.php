@@ -190,6 +190,7 @@ class PlgSystemMydigipass extends JPlugin
 				if (!$isAdmin)
 				{
 					$this->login($user, array('action' => 'core.login'));
+					JFactory::getApplication()->redirect(Juri::base());
 				}
 				else
 				{
