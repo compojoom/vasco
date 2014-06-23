@@ -10,7 +10,8 @@
 
 defined('_JEXEC') or die('Restricted access');
 
-JHTML::_('stylesheet', 'media/mod_mydigipass/css/basic.css');
+JHTML::_('script', 'media/mod_mydigipass/js/cookie.js');
+JHTML::_('script', 'media/mod_mydigipass/js/visibility.js');
 
 $plugin = JPluginHelper::getPlugin('system', 'mydigipass');
 $plgParams = new JRegistry($plugin->params);
@@ -19,6 +20,14 @@ $client_id = $plgParams->get("clientid", "");
 $redirect_uri = $plgParams->get("redirecturi", "");
 $mdp_base_uri = ($plgParams->get("sandbox", 0)) ? "https://sandbox.mydigipass.com" : "https://mydigipass.com";
 ?>
+
+<script type="text/javascript">
+	jQuery(document).ready(function() {
+		document.addEventListener(visibilityChange, function () {
+			docCookies.removeItem('digipassadmin', '/');
+		}, false);
+	});
+</script>
 
 <div class="mydigipass<?php echo $moduleclass_sfx ?>">
 	<a data-text="secure-login" data-style="large" class="dpplus-connect" data-origin="<?php echo $mdp_base_uri ?>"

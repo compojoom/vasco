@@ -35,6 +35,8 @@ class JFormFieldRedirecturi extends JFormField
 	 */
 	protected function getInput()
 	{
-		return Juri::root() . 'index.php?mydigipass=1';
+		$value = Juri::root() . 'index.php?mydigipass=1';
+
+		return $value . '<input type="hidden" name="' . $this->name . '" value="' . $value . '" />';
 	}
 }
