@@ -108,7 +108,7 @@
 	<target name="ftpdeploy" depends="setup-properties">
 		<gitversion workingCopy="${dirs.root}" propertyName="git.lastrevision"/>
 		<!-- Core release -->
-		<echo>Uploading Core release</echo>
+		<echo>Uploading release to dev folder</echo>
 		<ftpdeploy
 				host="${ftp.host}"
 				port="${ftp.port}"
@@ -120,8 +120,8 @@
 			<fileset dir="${dirs.root}">
 				<include name="CHANGELOG"/>
 			</fileset>
-			<fileset dir="${destination.dir}/">
-				<include name="pkg_${package.name}-git_${git.lastrevision}-core.zip"/>
+			<fileset dir="${destination.dir}/../">
+				<include name="pkg_${package.name}-git_${git.lastrevision}.zip"/>
 			</fileset>
 		</ftpdeploy>
 	</target>
