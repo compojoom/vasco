@@ -57,11 +57,11 @@
       <para><ulink url="http://mydigipass.com">Mydigipass.com</ulink>™ is a
       security service aiming to protect your online identity. The service is
       developed by the VASCO® Data Security GmbH and through this
-      documentation we will just call it Mydigipass API. </para>
+      documentation we will just call it Mydigipass API.</para>
 
       <para>The Mydigipass package distributed through compojoom.com is a
       collection of modules and plugins that makes integrating the mydigipass
-      API with your Joomla! site a breeze. </para>
+      API with your Joomla! site a breeze.</para>
 
       <para>So what does mydigipass.com exactly do?</para>
 
@@ -74,7 +74,7 @@
       with their mobile devices, authenticating via the embedded DIGIPASS in
       Intel® IPT on their laptop, ob by using on of the digipass hardware
       tokens. The authenticator is <emphasis>what the user has </emphasis>and
-      is the second authentication factor. </para>
+      is the second authentication factor.</para>
     </section>
   </chapter>
 
@@ -199,7 +199,7 @@
 
           <listitem>
             <para>Enter the client id of your developer.mydigipass.com
-            project. </para>
+            project.</para>
           </listitem>
         </varlistentry>
 
@@ -232,7 +232,33 @@
             account.</para>
           </listitem>
         </varlistentry>
+
+        <varlistentry>
+          <term>Block standard login</term>
+
+          <listitem>
+            <para>This options determines whether we should block users from
+            login in through the standard joomla login form if they have
+            connected their accounts with mydigipass.com. If you set this
+            option to yes, then once a user connects his account with
+            mydigipass.com the only way he would be able to login on your site
+            is through the mydigipass button. The standard login form won't
+            work! This is part of the two-factor authentication. If a user has
+            connected his profile with mydigipass, then he wants to use the
+            added security benefit of mydigipass. So it doesn't make sense for
+            him to still be able to login through the normal joomla
+            login.</para>
+          </listitem>
+        </varlistentry>
       </variablelist>
+
+      <important>
+        <para>If you set the block standard login option to yes, you need to
+        make sure that the mydigipass admin module is published in the
+        backend. If it is not and your admin account has been connected with
+        mydigipass.com you won't be able to login into your joomla
+        backend.</para>
+      </important>
     </section>
 
     <section>
@@ -247,7 +273,7 @@
 
       <variablelist>
         <varlistentry>
-          <term>Show label already connected </term>
+          <term>Show label already connected</term>
 
           <listitem>
             <para>Determines whether or not to show information to a user who
@@ -261,12 +287,43 @@
       <title>Mydigipass admin module</title>
 
       <para>This module shows a "mydigipass.com secure login" in the
-      administrator section of the website. </para>
+      administrator section of the website.</para>
 
       <note>
         <para>To make use of this function as administrator you have to
-        connect your account through the frontend first. </para>
+        connect your account through the frontend first.</para>
       </note>
+    </section>
+  </chapter>
+
+  <chapter>
+    <title>FAQ</title>
+
+    <para/>
+
+    <section>
+      <title>I've enabled block standard login and now I can't login into my
+      Joomla backend</title>
+
+      <para>If you've enabled the block standard login option in the plugin
+      settings, then people who have connected their accounts with
+      mydigipass.com won't be ablet o use the standard joomla login. They
+      would need to click on the mydigipass login button in order to login. If
+      you are an administrator on the site and you've connected your profile
+      with mydigipass.com you would need to use mydigipass.com in the joomla
+      backend as well. If you have forgotten to publish the mydigipass admin
+      module in your joomla backend you will no longer be able to login there.
+      </para>
+
+      <para>Don't panic! You will be able to login into the backend again, but
+      you need to unlink your account and for this you'll need access to your
+      database preferably through phpmyadmin. Once you are logged into your
+      database navigate to the #__user_profiles table and look for the
+      settings for your user id. If you don't know your user id, navigate to
+      #__users and look for your username in there. The id column will give
+      you an idea what your id number is. Once you have the id go back to the
+      #__user_profiles table, find the records for your user_id and delete the
+      uuid setting. Now you should be able to login again.</para>
     </section>
   </chapter>
 

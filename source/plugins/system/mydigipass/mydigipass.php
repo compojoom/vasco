@@ -318,6 +318,8 @@ class PlgSystemMydigipass extends JPlugin
 		$response->password = $user->password;
 		$response->status = JAuthentication::STATUS_SUCCESS;
 
+		$response->type = 'mydigipass';
+
 		// Import the user plugin group.
 		JPluginHelper::importPlugin('user');
 		$dispatcher = JEventDispatcher::getInstance();
@@ -334,6 +336,77 @@ class PlgSystemMydigipass extends JPlugin
 
 		// The user is successfully logged in. Run the after login events
 		$dispatcher->trigger('onUserAfterLogin', array($opt));
+	}
+
+	/**
+	 * We'll use this event to block the user from login in with the standard login form
+	 * if he has already connected his mydigipass.com account
+	 *
+	 * @param array $response  - the response object
+	 * @param array $opt       - any options
+	 *
+	 * @throws Exception
+	 */
+	public function onUserLogin(array $response, $opt)
+	{
+		// are we dealing wtih a mydigipass login? If not, let us find out if the user has connected his account
+		if ($response['type'] != 'mydigipass' && $this->params->get('block_login', 0))
+		{
+			$user = $this->getJoomlaUser($response);
+
+			if ($user->id)
+			{
+				$db = JFactory::getDbo();
+				$query = $db->getQuery(true);
+				$query->select('profile_value')
+					->from('#__user_profiles')
+					->where($db->qn('profile_key') . '=' . $db->q('uuid'))
+					->where($db->qn('user_id') . '=' . $db->q($user->id));
+				$db->setQuery($query);
+
+				$uuid = $db->loadObject();
+
+				if ($uuid)
+				{
+
+					$appl = JFactory::getApplication();
+
+					// Funny enough - if we don't redirect after we enqueue the message, no message is shown
+					// Most probably because of the $session->close() later on...
+					$appl->enqueueMessage(JText::_('PLG_SYSTEM_MYDIGIPASS_CONNECTED_WITH_MYDIGIPASS_USE_MYDIGIPASS_LOGIN'));
+					$appl->redirect(Juri::current());
+
+					// Log the user out
+					$appl->logout($user->id);
+
+					// Close the session
+					$session = JFactory::getSession();
+					$session->close();
+				}
+			}
+		}
+	}
+
+	/**
+	 * Load a joomla user object
+	 *
+	 * @param   array  $user  - info abot the user to load
+	 *
+	 * @return JUser
+	 */
+	private function getJoomlaUser($user)
+	{
+		JLoader::import('joomla.user.helper');
+		$instance = new JUser();
+
+		if ($id = intval(JUserHelper::getUserId($user['username'])))
+		{
+			$instance->load($id);
+
+			return $instance;
+		}
+
+		return $instance;
 	}
 
 	/**

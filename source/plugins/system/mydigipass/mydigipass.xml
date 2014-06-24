@@ -46,6 +46,13 @@
 					<option value="0">JNO</option>
 				</field>
 
+				<field name="block_login" type="radio" default="0"
+				       class="btn-group btn-group-yesno"
+				       label="PLG_SYSTEM_MYDIGIPASS_BLOCK_STANDARD_LOGIN_LABEL"
+				       description="PLG_SYSTEM_MYDIGIPASS_BLOCK_STANDARD_LOGIN_DESC">
+					<option value="1">JYES</option>
+					<option value="0">JNO</option>
+				</field>
 			</fieldset>
 		</fields>
 	</config>
